@@ -1,90 +1,79 @@
 /**
- predict4java: An SDP4 / SGP4 library for satellite orbit predictions
-
- Copyright (C)  2004-2010  David A. B. Johnson, G4DPZ.
-
- Author: David A. B. Johnson, G4DPZ <dave@g4dpz.me.uk>
-
- Comments, questions and bug reports should be submitted via
- http://sourceforge.net/projects/websat/
- More details can be found at the project home page:
-
- http://websat.sourceforge.net
-
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program; if not, visit http://www.fsf.org/
+ * predict4java: An SDP4 / SGP4 library for satellite orbit predictions
+ * <p>
+ * Copyright (C)  2004-2010  David A. B. Johnson, G4DPZ.
+ * <p>
+ * Author: David A. B. Johnson, G4DPZ <dave@g4dpz.me.uk>
+ * <p>
+ * Comments, questions and bug reports should be submitted via
+ * http://sourceforge.net/projects/websat/
+ * More details can be found at the project home page:
+ * <p>
+ * http://websat.sourceforge.net
+ * <p>
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * <p>
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, visit http://www.fsf.org/
  */
 package uk.me.g4dpz.satellite;
 
-import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author David A. B. Johnson, g4dpz
- *
  */
 public class SatelliteFactoryTest extends AbstractSatelliteTestBase {
 
-    private static final String SHOULD_HAVE_THROWN_ILLEGAL_ARGUMENT_EXCEPTION =
-            "Should have thrown IllegalArgument Exception";
+  @Rule
+  public ExpectedException expectedException = ExpectedException.none();
 
-    public SatelliteFactoryTest() {
-    }
+  @Test
+  public void testCreateLEOSatellite() {
+    final TLE tle = new TLE(LEO_TLE);
 
-    @Test
-    public void testCreateLEOSatellite() {
+    final Satellite satellite = SatelliteFactory.createSatellite(tle);
 
-        final TLE tle = new TLE(LEO_TLE);
+    assertTrue(satellite instanceof LEOSatellite);
+  }
 
-        final Satellite satellite = SatelliteFactory.createSatellite(tle);
+  @Test
+  public void testCreateDeepSpaceSatellite() {
+    final TLE tle = new TLE(DEEP_SPACE_TLE);
 
-        Assert.assertTrue(satellite instanceof LEOSatellite);
-    }
+    final Satellite satellite = SatelliteFactory.createSatellite(tle);
 
-    @Test
-    public void testCreateDeepSpaceSatellite() {
+    assertTrue(satellite instanceof DeepSpaceSatellite);
+  }
 
-        final TLE tle = new TLE(DEEP_SPACE_TLE);
+  @Test
+  public void testNullTLE() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectMessage("TLE was null");
 
-        final Satellite satellite = SatelliteFactory.createSatellite(tle);
+    SatelliteFactory.createSatellite(null);
+  }
 
-        Assert.assertTrue(satellite instanceof DeepSpaceSatellite);
-    }
+  @Test
+  public void testTLEWithWrongNumberOfRows() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectMessage("TLE had 0 elements");
 
-    @Test
-    public void testNullTLE() {
-        try {
-            SatelliteFactory.createSatellite(null);
-            Assert.fail(SHOULD_HAVE_THROWN_ILLEGAL_ARGUMENT_EXCEPTION);
-        }
-        catch (final IllegalArgumentException iae) {
-            // we expected this
-        }
-    }
+    final String[] theTLE = new String[0];
+    final TLE tle = new TLE(theTLE);
 
-    @Test
-    public void testTLEWithWrongNumberOfRows() {
-        try {
-            final String[] theTLE = new String[0];
-
-            final TLE tle = new TLE(theTLE);
-
-            SatelliteFactory.createSatellite(tle);
-
-            Assert.fail(SHOULD_HAVE_THROWN_ILLEGAL_ARGUMENT_EXCEPTION);
-        }
-        catch (final IllegalArgumentException iae) {
-            // we expected this
-        }
-    }
+    SatelliteFactory.createSatellite(tle);
+  }
 }
