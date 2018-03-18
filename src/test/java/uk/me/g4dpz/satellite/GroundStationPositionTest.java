@@ -41,31 +41,9 @@ public final class GroundStationPositionTest {
   private static final double HEIGHT_AMSL = 3.0;
   private static final double LONGITUDE = 2.0;
   private static final double LATITUDE = 1.0;
-  private static final double THETA = 4.0;
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
-
-  @Test
-  public void testDefaultConstructorAndSetters() {
-    final GroundStationPosition groundStationPosition = new GroundStationPosition();
-
-    final int[] elevations = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1,
-        2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2,
-        3, 4, 5};
-    groundStationPosition.setHorizonElevations(elevations);
-    groundStationPosition.setTheta(4.0);
-
-    final int[] oElevations = groundStationPosition.getHorizonElevations();
-
-    assertEquals(elevations.length, oElevations.length);
-
-    for (int i = 0; i < elevations.length; i++) {
-      assertEquals(elevations[i], oElevations[i]);
-    }
-
-    assertTrue(Math.abs(THETA - groundStationPosition.getTheta()) < 0.000001);
-  }
 
   @Test
   public void testConstructionUsingAttributes() {
@@ -78,7 +56,7 @@ public final class GroundStationPositionTest {
 
   @Test
   public void testSettingWrongNumberOfElevationsCausesException() {
-    final GroundStationPosition groundStationPosition = new GroundStationPosition();
+    final GroundStationPosition groundStationPosition = new GroundStationPosition(1, 2, 3);
     final int[] elevations = new int[]{0, 1};
 
     expectedException.expect(IllegalArgumentException.class);

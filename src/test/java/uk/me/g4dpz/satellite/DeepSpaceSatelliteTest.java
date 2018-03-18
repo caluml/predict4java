@@ -26,8 +26,9 @@
  */
 package uk.me.g4dpz.satellite;
 
-import org.joda.time.DateTime;
 import org.junit.Test;
+
+import java.time.Instant;
 
 import static org.junit.Assert.*;
 
@@ -38,12 +39,12 @@ public class DeepSpaceSatelliteTest extends AbstractSatelliteTestBase {
 
   @Test
   public final void testDeepSpaceSatellite() {
-    final DateTime timeNow = new DateTime("2009-04-17T10:10:52Z");
+    final Instant timeNow = Instant.parse("2009-04-17T10:10:52Z");
     final TLE tle = new TLE(DEEP_SPACE_TLE);
     assertTrue(tle.isDeepspace());
     final Satellite satellite = SatelliteFactory.createSatellite(tle);
 
-    final SatPos satellitePosition = satellite.getPosition(GROUND_STATION, timeNow.toDate());
+    final SatPos satellitePosition = satellite.getPosition(GROUND_STATION, timeNow);
 
     assertEquals(2.2579325, satellitePosition.getAzimuth(), DELTA);
     assertEquals(0.4144053, satellitePosition.getElevation(), DELTA);
@@ -61,12 +62,12 @@ public class DeepSpaceSatelliteTest extends AbstractSatelliteTestBase {
 
   @Test
   public final void testGeoSynchSatellite() {
-    final DateTime dateTime = new DateTime("2009-12-26T00:00:00Z");
+    final Instant dateTime = Instant.parse("2009-12-26T00:00:00Z");
     final TLE tle = new TLE(GEOSYNC_TLE);
     assertTrue(tle.isDeepspace());
     final Satellite satellite = SatelliteFactory.createSatellite(tle);
 
-    final SatPos satellitePosition = satellite.getPosition(GROUND_STATION, dateTime.toDate());
+    final SatPos satellitePosition = satellite.getPosition(GROUND_STATION, dateTime);
 
     assertTrue(tle.isDeepspace());
     assertEquals(5.7530820, satellitePosition.getAzimuth(), DELTA);
@@ -85,11 +86,11 @@ public class DeepSpaceSatelliteTest extends AbstractSatelliteTestBase {
 
   @Test
   public final void testMolniyaSatellite() {
-    final DateTime dateTime = new DateTime("2009-12-26T00:00:00Z");
+    final Instant dateTime = Instant.parse("2009-12-26T00:00:00Z");
     final TLE tle = new TLE(MOLNIYA_TLE);
     final Satellite satellite = SatelliteFactory.createSatellite(tle);
 
-    final SatPos satellitePosition = satellite.getPosition(GROUND_STATION, dateTime.toDate());
+    final SatPos satellitePosition = satellite.getPosition(GROUND_STATION, dateTime);
 
     assertTrue(tle.isDeepspace());
     assertEquals(6.2095948, satellitePosition.getAzimuth(), DELTA);

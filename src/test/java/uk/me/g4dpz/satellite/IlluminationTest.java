@@ -26,9 +26,11 @@
  */
 package uk.me.g4dpz.satellite;
 
-import org.joda.time.DateTime;
 import org.junit.Test;
 
+import java.time.Instant;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -39,10 +41,10 @@ public class IlluminationTest extends AbstractSatelliteTestBase {
     final TLE tle = new TLE(LEO_TLE);
     assertFalse(tle.isDeepspace());
     final Satellite satellite = SatelliteFactory.createSatellite(tle);
-    DateTime timeNow = new DateTime("2009-06-01T00:00:00Z");
+    Instant instant = Instant.parse("2009-06-01T00:00:00Z");
 
     for (int day = 0; day < 30; day++) {
-      final SatPos satPos = satellite.getPosition(GROUND_STATION, timeNow.toDate());
+      final SatPos satPos = satellite.getPosition(GROUND_STATION, instant);
 
       switch (day) {
         case 4:
@@ -57,7 +59,7 @@ public class IlluminationTest extends AbstractSatelliteTestBase {
           assertFalse("Satellite should not have been eclipsed on day " + day, satPos.isEclipsed());
           break;
       }
-      timeNow = timeNow.plusDays(1);
+      instant = instant.plus(1, DAYS);
     }
   }
 

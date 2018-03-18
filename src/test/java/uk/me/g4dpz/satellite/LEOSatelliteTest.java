@@ -26,12 +26,11 @@
  */
 package uk.me.g4dpz.satellite;
 
-import org.joda.time.DateTime;
-import org.junit.*;
+import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import java.time.Instant;
+
+import static org.junit.Assert.*;
 
 /**
  * @author David A. B. Johnson, g4dpz
@@ -49,12 +48,12 @@ public class LEOSatelliteTest extends AbstractSatelliteTestBase {
    */
   @Test
   public final void testLEOSatellite() {
-    final DateTime dateTime = new DateTime("2009-04-17T06:57:32Z");
+    final Instant dateTime = Instant.parse("2009-04-17T06:57:32Z");
     final TLE tle = new TLE(LEO_TLE);
     assertFalse(tle.isDeepspace());
     final Satellite satellite = SatelliteFactory.createSatellite(tle);
 
-    final SatPos satellitePosition = satellite.getPosition(GROUND_STATION, dateTime.toDate());
+    final SatPos satellitePosition = satellite.getPosition(GROUND_STATION, dateTime);
 
     assertEquals(3.2421950, satellitePosition.getAzimuth(), DELTA);
     assertEquals(0.1511580, satellitePosition.getElevation(), DELTA);
@@ -78,12 +77,12 @@ public class LEOSatelliteTest extends AbstractSatelliteTestBase {
 
   @Test
   public final void testWeatherSatellite() {
-    final DateTime dateTime = new DateTime(BASE_TIME);
+    final Instant dateTime = Instant.parse(BASE_TIME);
     final TLE tle = new TLE(WEATHER_TLE);
     assertFalse(tle.isDeepspace());
     final Satellite satellite = SatelliteFactory.createSatellite(tle);
 
-    final SatPos satellitePosition = satellite.getPosition(GROUND_STATION, dateTime.toDate());
+    final SatPos satellitePosition = satellite.getPosition(GROUND_STATION, dateTime);
 
     assertEquals(0.0602822, satellitePosition.getAzimuth(), DELTA);
     assertEquals(-0.2617647, satellitePosition.getElevation(), DELTA);
@@ -97,16 +96,15 @@ public class LEOSatelliteTest extends AbstractSatelliteTestBase {
     assertEquals(-0.2353420, satellitePosition.getEclipseDepth(), DELTA);
     assertFalse(satellitePosition.isEclipsed());
     assertTrue(satellite.willBeSeen(GROUND_STATION));
-
   }
 
   @Test
   public final void testIvoAlgorithm() {
-    final DateTime dateTime = new DateTime(BASE_TIME);
+    final Instant dateTime = Instant.parse(BASE_TIME);
     final TLE tle = new TLE(WEATHER_TLE);
     assertFalse(tle.isDeepspace());
     final Satellite satellite = SatelliteFactory.createSatellite(tle);
-    satellite.calculateSatelliteVectors(dateTime.toDate());
+    satellite.calculateSatelliteVectors(dateTime);
 
     SatPos satellitePosition = satellite.calculateSatelliteGroundTrack();
 
@@ -125,16 +123,15 @@ public class LEOSatelliteTest extends AbstractSatelliteTestBase {
     assertEquals(-3.0094317, satellitePosition.getRangeRate(), DELTA);
     assertEquals(-0.2353420, satellitePosition.getEclipseDepth(), DELTA);
     assertFalse(satellitePosition.isEclipsed());
-
   }
 
   @Test
   public final void testDeOrbitSatellite() {
-    final DateTime dateTime = new DateTime(BASE_TIME);
+    final Instant dateTime = Instant.parse(BASE_TIME);
     final TLE tle = new TLE(DE_ORBIT_TLE);
     assertFalse(tle.isDeepspace());
     final Satellite satellite = SatelliteFactory.createSatellite(tle);
-    satellite.calculateSatelliteVectors(dateTime.toDate());
+    satellite.calculateSatelliteVectors(dateTime);
 
     final SatPos satellitePosition = satellite.calculateSatelliteGroundTrack();
 

@@ -26,8 +26,6 @@
  */
 package uk.me.g4dpz.satellite;
 
-import java.text.SimpleDateFormat;
-
 /**
  * @author David A. B. Johnson, g4dpz
  */
@@ -41,8 +39,6 @@ abstract class AbstractSatelliteTestBase {
 
   static final GroundStationPosition GROUND_STATION =
       new GroundStationPosition(52.4670, -2.022, 200);
-
-  static final SimpleDateFormat TZ_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 
   static final String[] LEO_TLE = {
       "AO-51 [+]",
