@@ -39,9 +39,12 @@ package uk.me.g4dpz.satellite;
 
 import org.apache.commons.lang.StringUtils;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -81,7 +84,7 @@ public class TLE {
   private double xmo;
   private double xno;
   private boolean deepspace;
-  private java.util.Date createddate;
+  private Instant createddate;
 
   /**
    * Copy constructor.
@@ -344,12 +347,12 @@ public class TLE {
     return xnodeo;
   }
 
-  public Date getCreateddate() {
-    return new Date(createddate.getTime());
+  public Instant getCreateddate() {
+    return createddate;
   }
 
-  public void setCreateddate(final Date createddate) {
-    this.createddate = new Date(createddate.getTime());
+  public void setCreateddate(final Instant createddate) {
+    this.createddate = createddate;
   }
 
   /**

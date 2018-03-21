@@ -42,7 +42,6 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static java.time.temporal.ChronoUnit.*;
@@ -55,7 +54,6 @@ import static uk.me.g4dpz.satellite.PolePassed.*;
  */
 public class PassPredictor {
 
-  private static final String UTC = "UTC";
   private static final double SPEED_OF_LIGHT = 2.99792458E8;
   private static final double TWOPI = Math.PI * 2.0;
 
@@ -69,7 +67,7 @@ public class PassPredictor {
   private boolean windBackTime;
   private final double meanMotion;
   private int iterationCount;
-  private Date tca;
+  private Instant tca;
 
   /**
    * Constructor.
@@ -180,7 +178,7 @@ public class PassPredictor {
     do {
       instant = instant.plus(60, SECONDS);
       satPos = getSatPos(instant);
-      final Date now = new Date(instant.toEpochMilli());
+      final Instant now = instant;
       elevation = satPos.getElevation();
       if (elevation > maxElevation) {
         maxElevation = elevation;
@@ -195,7 +193,7 @@ public class PassPredictor {
     do {
       instant = instant.plus(5, SECONDS);
       satPos = getSatPos(instant);
-      final Date now = new Date(instant.toEpochMilli());
+      final Instant now  = instant;
       elevation = satPos.getElevation();
       if (elevation > maxElevation) {
         maxElevation = elevation;
@@ -204,7 +202,7 @@ public class PassPredictor {
       prevPos = satPos;
     } while (isBelowHorizon(satPos));
 
-    final Date startDate = satPos.getTime();
+    final Instant startDate = satPos.getTime();
 
     aosAzimuth = (int) ((satPos.getAzimuth() / (2.0 * Math.PI)) * 360.0);
 
@@ -212,7 +210,7 @@ public class PassPredictor {
     do {
       instant = instant.plus(30, SECONDS);
       satPos = getSatPos(instant);
-      final Date now = new Date(instant.toEpochMilli());
+      final Instant now  = instant;
       final PolePassed currPolePassed = getPolePassed(prevPos, satPos);
       if (currPolePassed != DEADSPOT_NONE) {
         polePassed = currPolePassed;
@@ -235,7 +233,7 @@ public class PassPredictor {
     do {
       instant = instant.plus(5, SECONDS);
       satPos = getSatPos(instant);
-      final Date now = new Date(instant.toEpochMilli());
+      final Instant now  = instant;
       elevation = satPos.getElevation();
       if (elevation > maxElevation) {
         maxElevation = elevation;
@@ -243,7 +241,7 @@ public class PassPredictor {
       }
     } while (isAboveHorizon(satPos));
 
-    final Date endDate = satPos.getTime();
+    final Instant endDate = satPos.getTime();
     losAzimuth = (int) ((satPos.getAzimuth() / (2.0 * Math.PI)) * 360.0);
 
     return new SatPassTime(startDate, endDate, tca, polePassed,

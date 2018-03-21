@@ -37,16 +37,18 @@
  */
 package uk.me.g4dpz.satellite;
 
-import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.Instant;
-import java.util.Date;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class SatPassTime {
 
-  private Date startTime;
-  private Date endTime;
-  private Date tca;
+  private Instant startTime;
+  private Instant endTime;
+  private Instant tca;
   private PolePassed polePassed;
   private int aos;
   private int los;
@@ -55,31 +57,31 @@ public class SatPassTime {
   private static final String NEW_LINE = "\n";
   private static final String DEG_NL = " deg.\n";
 
-  public SatPassTime(final Date startTime, final Date endTime, final Date tca, final PolePassed polePassed,
+  public SatPassTime(final Instant startTime, final Instant endTime, final Instant tca, final PolePassed polePassed,
                      final int aosAzimuth, final int losAzimuth,
                      final double maxEl) {
-    this.startTime = new Date(startTime.getTime());
-    this.endTime = new Date(endTime.getTime());
+    this.startTime = startTime;
+    this.endTime = endTime;
     this.polePassed = polePassed;
     this.aos = aosAzimuth;
     this.los = losAzimuth;
     this.maxEl = maxEl;
-    this.tca = new Date(tca.getTime());
+    this.tca = tca;
   }
 
   public final Instant getStartTime() {
-    return Instant.ofEpochMilli(startTime.getTime());
+    return startTime;
   }
 
   public final Instant getEndTime() {
-    return Instant.ofEpochMilli(endTime.getTime());
+    return endTime;
   }
 
   public final Instant getTCA() {
-    return Instant.ofEpochMilli(tca.getTime());
+    return tca;
   }
 
-  public final void setTCA(final Date theTCA) {
+  public final void setTCA(final Instant theTCA) {
     this.tca = theTCA;
   }
 
@@ -123,18 +125,18 @@ public class SatPassTime {
    */
   @Override
   public String toString() {
+    final double minutes = Duration.between(startTime, endTime).toMillis() / (double) TimeUnit.MINUTES.toMillis(1);
 
-    final double duration = (endTime.getTime() - startTime.getTime()) / 60000.0;
+    final String formattedStartDate = startTime.atZone(ZoneId.of("UTC")).format(DateTimeFormatter.ofPattern("MMMM d, yyyy"));
+    final String formattedStartTime = startTime.atZone(ZoneId.of("UTC")).format(DateTimeFormatter.ofPattern("h:mm a"));
 
-    // SimpleDateFormat isn't threadsafe
-    return "Date: " + new SimpleDateFormat("MMMMMM d, yyyy").format(startTime)
+    return "Date: " + formattedStartDate
         + NEW_LINE
         + "Start Time: "
-        + new SimpleDateFormat("h:mm a").format(startTime)
+        + formattedStartTime
         + NEW_LINE
-        +
         // "End Time: " + mTimeFormatter.format(endDate_time) + "\n" +
-        String.format("Duration: %4.1f min.\n", duration)
+        + String.format("Duration: %4.1f min.\n", minutes)
         + "AOS Azimuth: " + aos + DEG_NL
         + String.format("Max Elevation: %4.1f deg.\n", maxEl)
         + "LOS Azimuth: " + los + " deg.";

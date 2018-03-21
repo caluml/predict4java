@@ -39,7 +39,6 @@ package uk.me.g4dpz.satellite;
 
 import java.text.NumberFormat;
 import java.time.Instant;
-import java.util.Date;
 
 /**
  * @author g4dpz
@@ -80,8 +79,8 @@ public class SatPos {
     return elevation;
   }
 
-  public Date getTime() {
-    return new Date(time.toEpochMilli());
+  public Instant getTime() {
+    return time;
   }
 
   public final double getRange() {
